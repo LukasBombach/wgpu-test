@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.node",
   "scripts": {
+    "dev": "yarn build && yarn start",
+    "start": "node index.js",
     "build": "cargo-cp-artifact -nc index.node -- cargo build --message-format=json-render-diagnostics",
     "test": "cargo test"
   },

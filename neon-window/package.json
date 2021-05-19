@@ -9,6 +9,6 @@
     "neon-cli": "0.8.1"
   },
   "scripts": {
-    "install": "neon build"
+    "build": "neon build"
   }
 }
