@@ -11,10 +11,7 @@ use cocoa::foundation::{NSRect, NSPoint, NSSize, NSAutoreleasePool, NSProcessInf
                         NSString, NSUInteger};
 use cocoa::appkit::{NSApp, NSApplication, NSApplicationActivationPolicyRegular, NSWindow,
                     NSBackingStoreBuffered, NSMenu, NSMenuItem, NSWindowStyleMask,
-                    NSRunningApplication, NSApplicationActivateIgnoringOtherApps,
-                    NSWindowCollectionBehavior, NSApplicationPresentationOptions};
-
-use core_graphics::display::CGDisplay;
+                    NSRunningApplication, NSApplicationActivateIgnoringOtherApps};
 
 use objc::runtime::{Object, Sel};
 use objc::declare::ClassDecl;
@@ -48,13 +45,17 @@ fn hello(mut cx: FunctionContext) -> JsResult<JsString> {
         app_menu.addItem_(quit_item);
         app_menu_item.setSubmenu_(app_menu);
 
-
         // Create NSWindowDelegate
         let superclass = class!(NSObject);
         let mut decl = ClassDecl::new("MyWindowDelegate", superclass).unwrap();
 
-
         extern fn application_did_finish_launching(_: &Object, _: Sel, _: id, _: NSUInteger) -> () {
+            unsafe {
+                // let current_app = NSRunningApplication::currentApplication(nil);
+                // let app: id = NSApp();
+                // let () = msg_send![app, stop: nil];
+                NSApp().stop_(nil)
+            }
         }
 
         decl.add_method(sel!(window:applicationDidFinishLaunching:), application_did_finish_launching as extern fn(&Object, Sel, id, NSUInteger) -> ());
@@ -81,7 +82,11 @@ fn hello(mut cx: FunctionContext) -> JsResult<JsString> {
         window.makeKeyAndOrderFront_(nil);
         let current_app = NSRunningApplication::currentApplication(nil);
         current_app.activateWithOptions_(NSApplicationActivateIgnoringOtherApps);
-        app.run();
+        // app.run();
+        // app.stop_(nil);
+        // NSApp().stop_(nil);
+        // let () = msg_send![app, stop: nil];
+        // let () = msg_send![NSApp(), stop: nil];
     }
 
     Ok(cx.string("hello node"))
