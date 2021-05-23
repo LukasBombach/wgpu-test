@@ -11,7 +11,7 @@ fn hello(mut cx: FunctionContext) -> JsResult<JsString> {
     let event_loop = EventLoop::new();
     let window = WindowBuilder::new().build(&event_loop).unwrap();
 
-    event_loop.run(move |event, _, control_flow| {
+    /* event_loop.run(move |event, _, control_flow| {
         *control_flow = ControlFlow::Wait;
 
         match event {
@@ -21,7 +21,9 @@ fn hello(mut cx: FunctionContext) -> JsResult<JsString> {
             } if window_id == window.id() => *control_flow = ControlFlow::Exit,
             _ => (),
         }
-    });
+    }); */
+
+    Ok(cx.string("hello node"))
 }
 
 #[neon::main]
