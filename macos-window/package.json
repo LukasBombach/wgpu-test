@@ -1,0 +1,17 @@
+{
+  "name": "macos-window",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.node",
+  "scripts": {
+    "dev": "yarn build && echo \"\n\nrunning script\n\n\" && yarn start",
+    "start": "node index.js",
+    "build": "cargo-cp-artifact -nc index.node -- cargo build --message-format=json-render-diagnostics",
+    "test": "cargo test"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cargo-cp-artifact": "0.1"
+  }
+}
