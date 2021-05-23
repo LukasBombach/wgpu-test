@@ -10,6 +10,8 @@ crate-type = ["cdylib"]
 
 [dependencies]
 cocoa = "0.24.0"
+core-graphics = "0.22.2"
+objc = "0.2.7"
 
 [dependencies.neon]
 version = "0.8"

@@ -132,7 +132,9 @@ name = "macos-window"
 version = "0.1.0"
 dependencies = [
  "cocoa",
+ "core-graphics",
  "neon",
+ "objc",
 ]
 
 [[package]]
