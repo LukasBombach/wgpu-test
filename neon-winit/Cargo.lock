@@ -584,6 +584,7 @@ dependencies = [
 name = "neon-winit"
 version = "0.1.0"
 dependencies = [
+ "cocoa",
  "neon",
  "winit",
 ]

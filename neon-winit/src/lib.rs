@@ -12,29 +12,59 @@
 use neon::prelude::*;
 use std::{thread, time};
 use winit::{
-    event::{Event, StartCause},
+    event::{Event, StartCause, WindowEvent},
     event_loop::{ControlFlow, EventLoop},
     platform::run_return::EventLoopExtRunReturn,
     window::WindowBuilder,
 };
 
+use cocoa::{
+    appkit::{NSApp, NSApplication, NSWindow},
+    base::{id, nil},
+    foundation::{NSAutoreleasePool, NSSize},
+};
+
+#[derive(Debug, Clone, Copy)]
+enum CustomEvent {
+    Timer,
+}
+
 
 fn open_window(mut cx: FunctionContext) -> JsResult<JsString> {
 
-    let queue = cx.queue();
+    let mut event_loop = EventLoop::<CustomEvent>::with_user_event();
+    let _window = WindowBuilder::new()
+        .with_title("A fantastic window!")
+        .build(&event_loop)
+        .unwrap();
 
-    let mut event_loop = EventLoop::new();
-    let window = WindowBuilder::new().build(&event_loop).unwrap();
+    // `EventLoopProxy` allows you to dispatch custom events to the main Winit event
+    // loop from any thread.
+    let event_loop_proxy = event_loop.create_proxy();
+
+    std::thread::spawn(move || {
+        // Wake up the `event_loop` once every second and dispatch a custom event
+        // from a different thread.
+        loop {
+            std::thread::sleep(std::time::Duration::from_secs(1));
+            event_loop_proxy.send_event(CustomEvent::Timer).ok();
+        }
+    });
 
     event_loop.run_return(|event, _, control_flow| {
         *control_flow = ControlFlow::Wait;
 
 
         match event {
-            Event::MainEventsCleared => {
-                *control_flow = ControlFlow::Exit;
-                // window.request_redraw();
-            },
+            Event::UserEvent(event) => println!("user event: {:?}", event),
+            //Event::MainEventsCleared => {
+            //    *control_flow = ControlFlow::Exit;
+            //    // window.request_redraw();
+            //},
+            Event::WindowEvent {
+                event: WindowEvent::CloseRequested,
+                ..
+            } => *control_flow = ControlFlow::Exit,
             _ => (),
         }
     });
