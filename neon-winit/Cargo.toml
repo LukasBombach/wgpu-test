@@ -1,0 +1,17 @@
+[package]
+name = "neon-winit"
+version = "0.1.0"
+license = "ISC"
+edition = "2018"
+exclude = ["index.node"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+winit = "0.25.0"
+
+[dependencies.neon]
+version = "0.8"
+default-features = false
+features = ["napi-6"]
