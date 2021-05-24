@@ -10,9 +10,9 @@
 
 
 use neon::prelude::*;
-
+use std::{thread, time};
 use winit::{
-    event::{Event, WindowEvent},
+    event::{Event, StartCause},
     event_loop::{ControlFlow, EventLoop},
     platform::run_return::EventLoopExtRunReturn,
     window::WindowBuilder,
@@ -21,28 +21,35 @@ use winit::{
 
 fn open_window(mut cx: FunctionContext) -> JsResult<JsString> {
 
+    let queue = cx.queue();
+
     let mut event_loop = EventLoop::new();
     let window = WindowBuilder::new().build(&event_loop).unwrap();
 
     event_loop.run_return(|event, _, control_flow| {
         *control_flow = ControlFlow::Wait;
 
-        if let Event::WindowEvent { event, .. } = &event {
-            // Print only Window events to reduce noise
-            println!("{:?}", event);
-        }
 
         match event {
-            Event::WindowEvent {
-                event: WindowEvent::CloseRequested,
-                window_id,
-            } if window_id == window.id() => *control_flow = ControlFlow::Exit,
             Event::MainEventsCleared => {
                 *control_flow = ControlFlow::Exit;
-            }
+                // window.request_redraw();
+            },
             _ => (),
         }
     });
+
+    /* std::thread::spawn(move || {
+
+        loop{
+            thread::sleep(time::Duration::from_secs(1));
+
+            queue.send(move |_| {
+                window.request_redraw();
+                Ok(())
+            });
+        }
+    }); */
 
     Ok(cx.string("hello node"))
 }

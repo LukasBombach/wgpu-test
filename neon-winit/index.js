@@ -6,8 +6,8 @@ open_window();
 
 console.log("window should be open and I should show up");
 
-console.log("starting setTimeout for 5 seconds");
+console.log("starting setTimeout for 60 seconds");
 
 setTimeout(() => {
   console.log("Timeout done");
-}, 5000);
+}, 60000);
