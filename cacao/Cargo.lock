@@ -4,8 +4,15 @@
 name = "cacao"
 version = "0.1.0"
 dependencies = [
+ "cacao 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "neon",
 ]
+
+[[package]]
+name = "cacao"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c345ac877e20de1365c6b78413233b98efeb7572f6250dfa5d89aa65aa97b9a4"
 
 [[package]]
 name = "cfg-if"

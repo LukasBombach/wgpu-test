@@ -1,3 +1,7 @@
+use cacao::macos::{App, AppDelegate};
+use cacao::macos::window::{Window, WindowConfig, WindowDelegate};
+
+
 use neon::prelude::*;
 
 fn hello(mut cx: FunctionContext) -> JsResult<JsString> {
