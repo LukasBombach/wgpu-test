@@ -6,9 +6,9 @@ extern crate cocoa;
 #[macro_use]
 extern crate objc;
 
-use cocoa::base::{selector, nil, NO, id};
+use cocoa::base::{selector, nil, NO,YES, id};
 use cocoa::foundation::{NSRect, NSPoint, NSSize, NSAutoreleasePool, NSProcessInfo,
-                        NSString};
+                        NSString, NSDefaultRunLoopMode};
 use cocoa::appkit::{NSApp, NSApplication, NSApplicationActivationPolicyRegular, NSWindow,
                     NSBackingStoreBuffered, NSMenu, NSMenuItem, NSWindowStyleMask,
                     NSRunningApplication, NSApplicationActivateIgnoringOtherApps
@@ -25,9 +25,7 @@ fn hello(mut cx: FunctionContext) -> JsResult<JsString> {
     unsafe {
         let _pool = NSAutoreleasePool::new(nil);
 
-        extern "C" fn did_finish_launching(_: &Object, _: Sel, _: id) {
-            println!("application_did_finish_launching");
-        }
+
 
 
         // This must be done before `NSApp()` (equivalent to sending
@@ -37,6 +35,34 @@ fn hello(mut cx: FunctionContext) -> JsResult<JsString> {
         // let app: id = msg_send![APP_CLASS.0, sharedApplication];
 
         let app = NSApp();
+
+
+        extern "C" fn did_finish_launching(_: &Object, _: Sel, _: id) {
+
+            unsafe {
+                // let current_app = NSRunningApplication::currentApplication(nil);
+                // current_app.activateWithOptions_(NSApplicationActivateIgnoringOtherApps);
+        
+                println!("application_did_finish_launching");
+
+                let app = NSApp();
+
+                let () = msg_send![app, stop: nil];
+
+                loop {
+                    let event = app.nextEventMatchingMask_untilDate_inMode_dequeue_(!0,  // NSUIntegerMax = NSEventMaskAny
+                        nil, NSDefaultRunLoopMode, YES);
+        
+                     if event != nil {
+                        println!("app event: {:?}", event);
+                        let () = msg_send![app, sendEvent:event];
+                    }
+
+                }
+
+            }
+
+        }
 
         // Create NSWindowDelegate
         let superclass = class!(NSResponder);
@@ -106,6 +132,8 @@ fn hello(mut cx: FunctionContext) -> JsResult<JsString> {
         current_app.activateWithOptions_(NSApplicationActivateIgnoringOtherApps);
 
         app.run();
+
+
     }
 
     Ok(cx.string("hello node from rust"))
